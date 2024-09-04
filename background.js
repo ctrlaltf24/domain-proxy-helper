@@ -1,6 +1,3 @@
-const browserSettingsKey = 'com.github.ctrlaltf24.browser-proxy-switcher.domains';
-
-
 // Format of settings is:
 // [
 //     {
@@ -62,9 +59,7 @@ browser.storage.onChanged.addListener((changes, area) => {
     if (area === 'local') {
         let changedItems = Object.keys(changes);
         for (let item of changedItems) {
-            if (item === browserSettingsKey) {
-                settings = changes[item].newValue;
-            }
+            settings[item] = changes[item].newValue;
         }
     }
 });

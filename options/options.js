@@ -2,9 +2,7 @@ const template = document.querySelector('#proxyInput');
 const containersList = document.querySelector('#containers');
 const commonList = document.querySelector('#common');
 
-const browserSettingsKey = 'com.github.ctrlaltf24.browser-proxy-switcher.domains';
-
-let settings = {};
+let settings = [];
 
 function getProxyFromInput(text) {
     text = text.trim();
@@ -36,23 +34,17 @@ function storeSettings(e) {
         };
 
         let newSettingIndex = -1;
-        const originalSettings = settings[browserSettingsKey] || [];
-        for (let i = 0; i < originalSettings.length; i++) {
-            if (originalSettings[i].id === id) {
-                newSettingIndex = i;
+        for (let i = 0; i < settings.length; i++) {
+            if (settings[i].id === id) {
+                settings[i] = result;
                 break;
             }
         }
-        let settingsToStore = originalSettings;
         if (newSettingIndex === -1) {
-            settingsToStore = [...originalSettings, result];
-        } else {
-            settingsToStore[newSettingIndex] = result;
+            settings = [...settings, result];
         }
         
-        browser.storage.local.set({
-            [browserSettingsKey]: settingsToStore
-        });
+        browser.storage.local.set(settings);
 
     }
 }
@@ -81,7 +73,7 @@ async function setupContainerFields() {
     settings = await browser.storage.local.get();
 
     // See background.js for the structure of the domains object
-    let domains = settings[browserSettingsKey] || [];
+    let domains = settings || [];
 
     for (const domain of domains) {
         printContainerRow(domain, containersList);
