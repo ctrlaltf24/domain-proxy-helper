@@ -36,9 +36,6 @@ function handleProxifiedRequest(requestInfo) {
         return;
     }
 
-    // XXX: Not sure if this will respect the proxy DNS setting.
-    // May need to implement a custom DNS resolver
-
     // Only return the one proxy setting that matches the domain
     return {
         ...matchedSetting.proxy,
