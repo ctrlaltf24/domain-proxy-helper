@@ -43,9 +43,8 @@ function storeSettings(e) {
         if (newSettingIndex === -1) {
             settings = [...settings, result];
         }
-        
-        browser.storage.local.set(settings);
 
+        browser.storage.local.set({ "domains": settings });
     }
 }
 
@@ -61,31 +60,46 @@ function printContainerRow(domain, list) {
     const proxyInput = row.querySelector('input.userContext-proxy');
     proxyInput.value = domain.proxyString;
 
-    // showInfo(div);
     div.removeAttribute('hidden');
     proxyInput.addEventListener('change', storeSettings);
     domainInput.addEventListener('change', storeSettings);
+    proxyInput.addEventListener('change', ensureOneEmptyContainer);
+    domainInput.addEventListener('change', ensureOneEmptyContainer);
 
     list.appendChild(row);
 }
 
+function ensureOneEmptyContainer() {
+    // Check to make sure there is at least one empty domain input and one empty proxy input
+    let found = false;
+    for (let row of containersList.children) {
+        let domainInput = row.querySelector('input.userContent-domain');
+        let proxyInput = row.querySelector('input.userContext-proxy');
+        if (domainInput.value === '' && proxyInput.value === '') {
+            found = true;
+            break;
+        }
+    }
+    if (!found) {
+        printContainerRow({
+            "id": containersList.children.length,
+            "hostname": "",
+            "proxy": {},
+            "proxyString": ""
+        }, containersList);
+    }
+}
+
 async function setupContainerFields() {
-    settings = await browser.storage.local.get();
-
     // See background.js for the structure of the domains object
-    let domains = settings || [];
+    let storedSettings = await browser.storage.local.get();
+    settings = storedSettings['domains'] || [];
 
-    for (const domain of domains) {
+    for (const domain of settings) {
         printContainerRow(domain, containersList);
     }
 
-    // Print one extra row
-    printContainerRow({
-        "id": domains.length + 1,
-        "hostname": "",
-        "proxy": {},
-        "proxyString": ""
-    }, containersList);
+    ensureOneEmptyContainer();
 }
 
 setupContainerFields().catch(e => { console.log(e) });

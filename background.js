@@ -1,31 +1,35 @@
 // Format of settings is:
-// [
-//     {
-//         // UUID v4
-//         "id": "00000000-0000-0000-0000-000000000000",
-//         // Domain name
-//         "hostname": "firefox-default",
-//         // Proxy settings
-//         "proxy": {
-//             "type": "socks4",
-//             "username": "user",
-//             "password": "password",
-//             "host": "",
-//             "port": "1080",
-//             "proxyDNS": true
-//         },
-//         // Proxy string (used for easy display)
-//         "proxyString": "socks4://localhost:1080"
-//     }
-// ]
-let settings = [];
+// {
+//     "domains": [
+//         {
+//             // UUID v4
+//             "id": "00000000-0000-0000-0000-000000000000",
+//             // Domain name
+//             "hostname": "firefox-default",
+//             // Proxy settings
+//             "proxy": {
+//                 "type": "socks4",
+//                 "username": "user",
+//                 "password": "password",
+//                 "host": "",
+//                 "port": "1080",
+//                 "proxyDNS": true
+//             },
+//             // Proxy string (used for easy display)
+//             "proxyString": "socks4://localhost:1080"
+//         }
+//     ]
+// }
+let settings = {
+    "domains": []
+};
 
 function handleProxifiedRequest(requestInfo) {
     let requestHostname = new URL(requestInfo.url).hostname;
     // Go through the list of domains and see if the request matches any of them
     let matchedSetting = null;
-    for (let index in settings) {
-        let setting = settings[index];
+    for (let index in settings["domains"]) {
+        let setting = settings["domains"][index];
         if (requestHostname === setting.hostname || requestHostname.endsWith('.' + setting.hostname)) {
             matchedSetting = setting;
             break;
@@ -56,7 +60,7 @@ browser.storage.onChanged.addListener((changes, area) => {
     if (area === 'local') {
         let changedItems = Object.keys(changes);
         for (let item of changedItems) {
-            settings[item] = changes[item].newValue;
+            settings = changes[item].newValue;
         }
     }
 });
