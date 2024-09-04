@@ -1,14 +1,11 @@
 {
   "manifest_version": 2,
-  "name": "Containers Socks Proxy Helper",
-  "description": "Assign a separate socks proxy to each Firefox container and to Private browsing windows - be sure your privacy is protected!",
-  "version": "0.0.5b",
-  "icons": {
-    "48": "icons/locked.svg"
-  },
+  "name": "Domain Socks Proxy Helper",
+  "description": "Assign a separate socks proxy for a specific domain",
+  "version": "0.0.1",
   "browser_specific_settings": {
     "gecko": {
-      "id": "containers-proxy-helper@firefox4ever",
+      "id": "domain-proxy-helper@ctrlalt24",
       "strict_min_version": "91.1.0"
     }
   },
@@ -16,8 +13,6 @@
     "scripts": [
       "background.js"
     ]
-  },
-  "browser_action": {
   },
   "options_ui": {
     "browser_style": true,
