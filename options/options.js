@@ -24,24 +24,27 @@ function storeSettings(e) {
         const proxyInput = row.querySelector('input.userContext-proxy');
         const domainInput = row.querySelector('input.userContent-domain');
         if (!proxyInput || !domainInput || proxyInput.value === '' || domainInput.value === '') {
+            // Remove the row if either the domain or proxy is empty
+            settings = settings.filter((setting) => setting.id !== id);
             return;
-        }
-        let result = {
-            "id": id,
-            "hostname": domainInput.value,
-            "proxy": getProxyFromInput(proxyInput.value),
-            "proxyString": proxyInput.value
-        };
+        } else {
+            let result = {
+                "id": id,
+                "hostname": domainInput.value,
+                "proxy": getProxyFromInput(proxyInput.value),
+                "proxyString": proxyInput.value
+            };
 
-        let newSettingIndex = -1;
-        for (let i = 0; i < settings.length; i++) {
-            if (settings[i].id === id) {
-                settings[i] = result;
-                break;
+            let newSettingIndex = -1;
+            for (let i = 0; i < settings.length; i++) {
+                if (settings[i].id === id) {
+                    settings[i] = result;
+                    break;
+                }
             }
-        }
-        if (newSettingIndex === -1) {
-            settings = [...settings, result];
+            if (newSettingIndex === -1) {
+                settings = [...settings, result];
+            }
         }
 
         browser.storage.local.set({ "domains": settings });
