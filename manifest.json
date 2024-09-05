@@ -21,7 +21,6 @@
   "permissions": [
     "proxy",
     "storage",
-    "contextualIdentities",
     "<all_urls>"
   ]
 }
