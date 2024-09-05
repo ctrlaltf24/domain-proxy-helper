@@ -26,7 +26,6 @@ function storeSettings(e) {
         if (!proxyInput || !domainInput || proxyInput.value === '' || domainInput.value === '') {
             // Remove the row if either the domain or proxy is empty
             settings = settings.filter((setting) => setting.id !== id);
-            return;
         } else {
             let result = {
                 "id": id,
