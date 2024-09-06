@@ -1,6 +1,9 @@
 const template = document.querySelector('#proxyInput');
 const containersList = document.querySelector('#containers');
 const commonList = document.querySelector('#common');
+const importForm = document.querySelector('#importForm');
+const importInput = document.querySelector('#import');
+const exportButton = document.querySelector('#export');
 
 let settings = [];
 
@@ -78,8 +81,11 @@ function ensureOneEmptyContainer() {
         let domainInput = row.querySelector('input.userContent-domain');
         let proxyInput = row.querySelector('input.userContext-proxy');
         if (domainInput.value === '' && proxyInput.value === '') {
-            found = true;
-            break;
+            if (found) {
+                row.remove();
+            } else {
+                found = true;
+            }
         }
     }
     if (!found) {
@@ -105,3 +111,33 @@ async function setupContainerFields() {
 }
 
 setupContainerFields().catch(e => { console.log(e) });
+
+function exportSettings() {
+    const data = new Blob([JSON.stringify(settings)], { type: 'application/json' });
+    const url = URL.createObjectURL(data);
+
+    // Create a temporary a element to download the file
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'per-domain-proxy-settings.json';
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+}
+
+async function importSettings() {
+    const file = importInput.files[0];
+    if (!file) {
+        return;
+    }
+    let contents = await file.text();
+    const newDomainSettings = JSON.parse(contents);
+    settings["domains"] = newDomainSettings;
+    containersList.innerHTML = '';
+    await browser.storage.local.set({ "domains": settings["domains"] });
+    await setupContainerFields();
+}
+
+importForm.addEventListener('submit', importSettings);
+exportButton.addEventListener('click', exportSettings);

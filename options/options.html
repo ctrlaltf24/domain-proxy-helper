@@ -12,7 +12,7 @@
 <body class="addon-details">
 <template id="proxyInput">
     <div class="identity-icon identity-color" data-identity-id="" data-value="$proxy" hidden="">
-        <input class="userContent-domain" id="domain" type="text"></button>
+        <input class="userContent-domain" id="domain" type="text">
         <input class="userContext-proxy" type="text">
     </div>
 </template>
@@ -24,6 +24,13 @@
     <hr>
     <!-- This button doesn't do anything itself except match user expectation. The fields are auto-saved. -->
     <button>Save</button>
+    <br>
+    <button id="export">Export Settings</button>
+    <br>
+    <form id="importForm">
+        <button>Import Settings</button>
+        <input type="file" id="import" accept=".json">
+    </form>
     <hr>
     <div class="addon-detail-row addon-detail-help-row">
         <h2>Proxy:</h2>
