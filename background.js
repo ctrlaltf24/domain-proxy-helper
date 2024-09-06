@@ -23,7 +23,6 @@
 let settings = {
     "domains": [],
 };
-// Temporary cache of DNS resolutions
 let cachedDNS = [];
 
 async function refreshDNSCache() {
@@ -41,9 +40,21 @@ async function cacheDNS(domain) {
         console.warn("Cannot set the system wide proxy for a brief moment to cache DNS resolution without permissions to access incognito mode.");
         return;
     }
+    if (!domain.proxy) {
+        console.error(`No proxy settings for ${domain.hostname}`);
+        return;
+    }
     let originalProxy = await browser.proxy.settings.get({});
-    // Trim socks:// from the proxy string so it's valid for the proxy settings
-    let socksString = domain.proxyString.replace(/^socks:\/\//, '');
+    // Format the proxy setting as a string
+    let socksString = domain.proxy.hostname;
+    if (domain.proxy.port) {
+        socksString += ':' + domain.proxy.port;
+    }
+    if (domain.proxy.username && domain.proxy.password) {
+        socksString = domain.proxy.username + ':' + domain.proxy.password + '@' + socksString;
+    } else if (domain.proxy.username) {
+        socksString = domain.proxy.username + '@' + socksString;
+    }
     await browser.proxy.settings.set({
         value: {
             proxyDNS: true,
