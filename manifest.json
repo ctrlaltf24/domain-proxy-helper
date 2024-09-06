@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Domain Socks Proxy Helper",
   "description": "Assign a separate socks proxy for a specific domain",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "browser_specific_settings": {
     "gecko": {
       "id": "domain-proxy-helper@ctrlalt24",
