@@ -1,8 +1,8 @@
 const template = document.querySelector('#proxyInput');
 const containersList = document.querySelector('#containers');
 const commonList = document.querySelector('#common');
-const importForm = document.querySelector('#importForm');
-const importInput = document.querySelector('#import');
+const importButton = document.querySelector('#importButton');
+const importInput = document.querySelector('#importInput');
 const exportButton = document.querySelector('#export');
 const saveButton = document.querySelector('#saveButton');
 
@@ -175,6 +175,7 @@ function save() {
     }, 1000);
 }
 
-importForm.addEventListener('submit', importSettings);
+importButton.addEventListener('click', () => importInput.click());
+importInput.addEventListener('change', importSettings);
 exportButton.addEventListener('click', exportSettings);
 saveButton.addEventListener('click', save);
