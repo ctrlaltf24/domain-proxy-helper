@@ -4,6 +4,7 @@ const commonList = document.querySelector('#common');
 const importForm = document.querySelector('#importForm');
 const importInput = document.querySelector('#import');
 const exportButton = document.querySelector('#export');
+const saveButton = document.querySelector('#saveButton');
 
 let settings = [];
 
@@ -53,6 +54,14 @@ function storeSettings(e) {
     }
 }
 
+function generateId() {
+    // Generates a random identifier that is not already in use
+    let id = '';
+    do {
+        id = Math.floor(Math.random() * 1_000_000_000).toString();
+    } while (settings.find((setting) => setting.id === id));
+    return id;
+}
 
 function printContainerRow(domain, list) {
     const row = template.content.cloneNode(true);
@@ -80,6 +89,10 @@ function ensureOneEmptyContainer() {
     for (let row of containersList.children) {
         let domainInput = row.querySelector('input.userContent-domain');
         let proxyInput = row.querySelector('input.userContext-proxy');
+        // Skip the header row
+        if (domainInput == null && proxyInput == null) {
+            continue;
+        }
         if (domainInput.value === '' && proxyInput.value === '') {
             if (found) {
                 row.remove();
@@ -90,7 +103,7 @@ function ensureOneEmptyContainer() {
     }
     if (!found) {
         printContainerRow({
-            "id": containersList.children.length,
+            "id": generateId(),
             "hostname": "",
             "proxy": {},
             "proxyString": ""
@@ -132,12 +145,36 @@ async function importSettings() {
         return;
     }
     let contents = await file.text();
-    const newDomainSettings = JSON.parse(contents);
-    settings["domains"] = newDomainSettings;
+    let newDomainSettings = JSON.parse(contents);
+    // Generate new IDs for the imported settings
+    for (let domain of newDomainSettings) {
+        domain["id"] = generateId();
+    }
+    settings = [...newDomainSettings];
     containersList.innerHTML = '';
-    await browser.storage.local.set({ "domains": settings["domains"] });
+    await browser.storage.local.set({ "domains": settings });
     await setupContainerFields();
+}
+
+function save() {
+    // For each element in container that has the attribute data-identity-id run storeSettings
+    containersList.querySelectorAll('[data-identity-id]').forEach(row => {
+        storeSettings({ target: row });
+        // Remove any row that have an empty domain or proxy
+        if (row.querySelector('input.userContent-domain').value === '' || row.querySelector('input.userContext-proxy').value === '') {
+            row.remove();
+        }
+    });
+
+    ensureOneEmptyContainer();
+
+    // turn the save button green for a second then back to normal
+    saveButton.style.backgroundColor = 'green';
+    setTimeout(() => {
+        saveButton.style.backgroundColor = '';
+    }, 1000);
 }
 
 importForm.addEventListener('submit', importSettings);
 exportButton.addEventListener('click', exportSettings);
+saveButton.addEventListener('click', save);

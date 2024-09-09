@@ -73,10 +73,9 @@ async function cacheDNS(domain) {
         cachedDNS.push(domain.hostname);
     }).catch((error) => {
         console.error(`Failed to resolve DNS for ${domain.hostname}: ${error.message}`);
-    }).finally(() => {
-        browser.proxy.settings.set({
-            value: originalProxy
-        });
+    });
+    await browser.proxy.settings.set({
+        value: originalProxy
     });
 }
 

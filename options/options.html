@@ -11,19 +11,23 @@
 
 <body class="addon-details">
 <template id="proxyInput">
-    <div class="identity-icon identity-color" data-identity-id="" data-value="$proxy" hidden="">
-        <input class="userContent-domain" id="domain" type="text">
-        <input class="userContext-proxy" type="text">
+    <div class="row" data-identity-id="" data-value="$proxy" hidden="">
+        <input class="userContent-domain col-6" id="domain" type="text" placeholder="example.com">
+        <input class="userContext-proxy col-6" type="text" placeholder="socks://user:pass@localhost:1080">
     </div>
 </template>
 
 <section>
     <div class="addon-detail-description" id="common"></div>
     <hr>
-    <div class="addon-detail-description" id="containers"></div>
+    <div class="addon-detail-description" id="containers">
+        <div class="row">
+            <h3 class="col-6 centered">Domains:</h3>
+            <h3 class="col-6 centered">Socks Proxy:</h3>
+        </div>
+    </div>
     <hr>
-    <!-- This button doesn't do anything itself except match user expectation. The fields are auto-saved. -->
-    <button>Save</button>
+    <button id="saveButton">Save</button>
     <br>
     <button id="export">Export Settings</button>
     <br>
@@ -32,12 +36,6 @@
         <input type="file" id="import" accept=".json">
     </form>
     <hr>
-    <div class="addon-detail-row addon-detail-help-row">
-        <h2>Proxy:</h2>
-        <p>socks/socks4 proxies ( socks://username:password@host:port )</p>
-        <h2>Help</h2>
-        <p>Only valid socks proxy URIs will be saved. Refresh to check.</p>
-    </div>
 </section>
 
 <script src="options.js"></script>
