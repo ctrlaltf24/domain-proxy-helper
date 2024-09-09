@@ -1,0 +1,10 @@
+# Domain Socks Proxy Helper
+
+Allows configuration of multiple socks proxies per domain.
+
+Note: in order to populate DNS over socks:
+
+- The global proxy setting is briefly set to each of your proxies on startup. Some of your requests when the browser is first starting may go through the socks proxy.
+- Must have permission to run in private in order to set global proxy settings (See note on <https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/proxy/settings> for why)
+
+Fork of <https://addons.mozilla.org/en-US/firefox/addon/containers-proxy-helper/> but modified to per-domain rather than per-container.
